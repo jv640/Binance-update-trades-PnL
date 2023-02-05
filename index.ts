@@ -211,7 +211,7 @@ async function updateCurrentMonthTrades(auth: any, googleSheets: any) {
 
 
 async function main() {
-
+    console.log('Job running successfully')
     const { auth, googleSheets } = await getGoogleAuthAndSpreadSheet()
 
     nodeCron.schedule('0 0 0 * * *', async () => {

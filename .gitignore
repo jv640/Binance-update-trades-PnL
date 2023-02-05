@@ -3,6 +3,4 @@ node_modules/
 
 # dotenv environment variable files
 .env
-
-# Nuxt.js build / generate output
-dist
+.DS_Store
