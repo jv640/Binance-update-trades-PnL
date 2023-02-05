@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 export class NodeMail {
-    private readonly transporter = nodemailer.createTransport({
+    transporter = nodemailer.createTransport({
         service: "hotmail",
         auth: {
             user: process.env.HOTMAIL_USER_EMAIL || "",
@@ -8,7 +8,7 @@ export class NodeMail {
         },
     });
 
-    async sendMail(body: string) {
+    async sendMail(body) {
         await this.transporter
             .sendMail({
                 from: `"Your binance Script 👻" <${process.env.HOTMAIL_USER_EMAIL}>`,

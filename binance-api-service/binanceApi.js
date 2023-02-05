@@ -1,15 +1,15 @@
 import axios from "axios";
 import dotenv from "dotenv";
 import crypto from "crypto";
-import { NodeMail } from "../nodeMail";
+import { NodeMail } from "../nodeMail.js";
 
 dotenv.config();
 export class BinanceApi {
-    private readonly APIKEY = process.env.API_KEY;
-    private readonly SECRETKEY = process.env.SECRET_KEY || "";
-    private readonly BASE_URL = process.env.BASE_URL;
+    APIKEY = process.env.API_KEY;
+    SECRETKEY = process.env.SECRET_KEY || "";
+    BASE_URL = process.env.BASE_URL;
 
-    private readonly nodemail = new NodeMail();
+    nodemail = new NodeMail();
 
     async getAccountInfo() {
         const timestamp = Date.now();
@@ -32,7 +32,7 @@ export class BinanceApi {
         return data.data;
     }
 
-    async getCurrentMonthTrades(time: number) {
+    async getCurrentMonthTrades(time) {
         const timestamp = Date.now();
         const msg = `startTime=${time}&endTime=${Math.min(
             time + 604800000,
@@ -56,7 +56,7 @@ export class BinanceApi {
         return this.getTrades(msg, signature);
     }
 
-    async getTrades(msg: string, signature: string) {
+    async getTrades(msg, signature) {
         const config = {
             headers: {
                 "Content-Type": "application/json",
@@ -70,7 +70,7 @@ export class BinanceApi {
             .then((response) => response.data)
             .catch(async (error) => {
                 const { response } = error;
-                let errorMsg: string = "";
+                let errorMsg = "";
                 if (response) errorMsg = JSON.stringify(response.data);
                 else errorMsg = error?.message || JSON.stringify(error);
                 await this.nodemail.sendMail(

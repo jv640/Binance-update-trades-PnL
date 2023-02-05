@@ -1,8 +1,8 @@
-import { BinanceApi } from './binance-api-service/binanceApi'
+import { BinanceApi } from './binance-api-service/binanceApi.js'
 import { google } from "googleapis"
 import dotenv from 'dotenv'
 import nodeCron from 'node-cron'
-import { NodeMail } from './nodeMail';
+import { NodeMail } from './nodeMail.js';
 dotenv.config();
 
 const binanceApi = new BinanceApi()
@@ -35,18 +35,18 @@ async function getGoogleAuthAndSpreadSheet() {
         const googleSheets = google.sheets({ version: "v4", auth: client });
 
         return { auth, googleSheets }
-    } catch (error: any) {
+    } catch (error) {
         const errMsg = `Google Auth failed with reason: ${JSON.stringify(error?.message || error)}`
         await nodemail.sendMail(errMsg)
         throw new Error(errMsg);
     }
 }
 
-function filterUniqueTrades(tradesFromBinance: any, tradesAlreadyInSheet: number[] = []) {
+function filterUniqueTrades(tradesFromBinance, tradesAlreadyInSheet= []) {
     try {
-        let result: unknown[][] = []
+        let result= []
         let duplicate = 0
-        tradesFromBinance.forEach((element: any) => {
+        tradesFromBinance.forEach((element) => {
             if (tradesAlreadyInSheet.find(orderId => orderId == element.id)) {
                 console.log('duplicate order', element.id)
                 duplicate = duplicate + 1
@@ -58,7 +58,7 @@ function filterUniqueTrades(tradesFromBinance: any, tradesAlreadyInSheet: number
         console.log("Total trade came was ", tradesFromBinance.length)
         console.log("Total duplicate trade was ", duplicate)
         return result
-    } catch (error: any) {
+    } catch (error) {
         const errMsg = `Filter unique trades function failed with reason: ${JSON.stringify(error?.message || error)}`
         nodemail.sendMail(errMsg)
         throw new Error(errMsg);
@@ -66,7 +66,7 @@ function filterUniqueTrades(tradesFromBinance: any, tradesAlreadyInSheet: number
 }
 
 
-async function updateTotalTrades(auth: any, googleSheets: any) {
+async function updateTotalTrades(auth, googleSheets) {
     console.log("🚀 ~ Updating overall trades start")
     const tradesInfo = await binanceApi.getRecent7DaysTrades()
 
@@ -78,9 +78,9 @@ async function updateTotalTrades(auth: any, googleSheets: any) {
     const tradesFromSheet = await googleSheets.spreadsheets.values.get({
         spreadsheetId,
         range: "Sheet1!B2:B",
-    }).catch(async (error: any) => {
+    }).catch(async (error) => {
         const { response } = error;
-        let errorMsg: string = ''
+        let errorMsg = ''
         if (response)
             errorMsg = JSON.stringify(response.data)
         else
@@ -99,9 +99,9 @@ async function updateTotalTrades(auth: any, googleSheets: any) {
         requestBody: {
             values: filteredTrades,
         },
-    }).catch(async (error: any) => {
+    }).catch(async (error) => {
         const { response } = error;
-        let errorMsg: string = ''
+        let errorMsg = ''
         if (response)
             errorMsg = JSON.stringify(response.data)
         else
@@ -122,7 +122,7 @@ function getCurrentMonthTimestamps() {
     return { firstDay, lastDay, currentMonth }
 }
 
-async function updateCurrentMonthTrades(auth: any, googleSheets: any) {
+async function updateCurrentMonthTrades(auth, googleSheets) {
     console.log("🚀 ~ Updating current month trades started")
 
     const { firstDay, lastDay, currentMonth } = getCurrentMonthTimestamps()
@@ -130,9 +130,9 @@ async function updateCurrentMonthTrades(auth: any, googleSheets: any) {
 
     const sheetMetadata = await googleSheets.spreadsheets.get({
         spreadsheetId,
-    }).catch(async (error: any) => {
+    }).catch(async (error) => {
         const { response } = error;
-        let errorMsg: string = ''
+        let errorMsg = ''
         if (response)
             errorMsg = JSON.stringify(response.data)
         else
@@ -175,9 +175,9 @@ async function updateCurrentMonthTrades(auth: any, googleSheets: any) {
     const tradesFromSheet = await googleSheets.spreadsheets.values.get({
         spreadsheetId,
         range: "Sheet1!B2:B",
-    }).catch(async (error: any) => {
+    }).catch(async (error) => {
         const { response } = error;
-        let errorMsg: string = ''
+        let errorMsg = ''
         if (response)
             errorMsg = JSON.stringify(response.data)
         else
@@ -196,9 +196,9 @@ async function updateCurrentMonthTrades(auth: any, googleSheets: any) {
         requestBody: {
             values: filteredTrades,
         },
-    }).catch(async (error: any) => {
+    }).catch(async (error) => {
         const { response } = error;
-        let errorMsg: string = ''
+        let errorMsg = ''
         if (response)
             errorMsg = JSON.stringify(response.data)
         else
@@ -222,6 +222,5 @@ async function main() {
     })
 
 }
-
 
 main()
