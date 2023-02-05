@@ -3,10 +3,21 @@ import { google } from "googleapis"
 import dotenv from 'dotenv'
 import nodeCron from 'node-cron'
 import { NodeMail } from './nodeMail.js';
+import express  from 'express';
 dotenv.config();
 
 const binanceApi = new BinanceApi()
 const nodemail = new NodeMail()
+const app = express()
+
+app.get('/', (req, res) => {
+    res.send("Hello Dude!!")
+})
+
+app.listen(3000, () => {
+    console.log('App is running')
+    main()
+})
 
 async function getGoogleAuthAndSpreadSheet() {
     try {
@@ -220,7 +231,4 @@ async function main() {
         await updateTotalTrades(auth, googleSheets)
         await updateCurrentMonthTrades(auth, googleSheets)
     })
-
 }
-
-main()

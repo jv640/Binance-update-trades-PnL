@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc --project ./",
-    "dev": "node index",
+    "dev": "nodemon --watch . node index",
     "start:prod": "node ./dist/index.js",
     "build_and_start": "npm run build && npm run start:prod",
     "start": "nodemon --watch . -e ts --exec npm run build_and_start",
