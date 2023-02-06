@@ -225,7 +225,7 @@ async function main() {
     console.log('Job running successfully')
     const { auth, googleSheets } = await getGoogleAuthAndSpreadSheet()
 
-    nodeCron.schedule('* */5 * * * *', async () => {
+    nodeCron.schedule('0 0 0 * * *', async () => {
         // This job will run every day
         console.log('Cron job started successfully', new Date().toLocaleTimeString());
         await updateTotalTrades(auth, googleSheets)
