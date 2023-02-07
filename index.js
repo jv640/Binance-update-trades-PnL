@@ -14,9 +14,13 @@ app.get('/', (req, res) => {
     res.send("Hello Dude!!")
 })
 
+app.get('/run-my-script', async (req, res) => {
+    await main()
+    await nodemail.sendMail(`Trades updated successfully`)
+    res.send("Script ran successfully")
+})
 app.listen(3000, () => {
     console.log('App is running')
-    main()
 })
 
 async function getGoogleAuthAndSpreadSheet() {
