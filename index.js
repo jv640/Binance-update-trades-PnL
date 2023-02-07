@@ -1,9 +1,8 @@
 import { BinanceApi } from './binance-api-service/binanceApi.js'
 import { google } from "googleapis"
 import dotenv from 'dotenv'
-import nodeCron from 'node-cron'
 import { NodeMail } from './nodeMail.js';
-import express  from 'express';
+import express from 'express';
 dotenv.config();
 
 const binanceApi = new BinanceApi()
@@ -57,9 +56,9 @@ async function getGoogleAuthAndSpreadSheet() {
     }
 }
 
-function filterUniqueTrades(tradesFromBinance, tradesAlreadyInSheet= []) {
+function filterUniqueTrades(tradesFromBinance, tradesAlreadyInSheet = []) {
     try {
-        let result= []
+        let result = []
         let duplicate = 0
         tradesFromBinance.forEach((element) => {
             if (tradesAlreadyInSheet.find(orderId => orderId == element.id)) {
@@ -229,10 +228,6 @@ async function main() {
     console.log('Job running successfully')
     const { auth, googleSheets } = await getGoogleAuthAndSpreadSheet()
 
-    nodeCron.schedule('0 0 0 * * *', async () => {
-        // This job will run every day
-        console.log('Cron job started successfully', new Date().toLocaleTimeString());
-        await updateTotalTrades(auth, googleSheets)
-        await updateCurrentMonthTrades(auth, googleSheets)
-    })
+    await updateTotalTrades(auth, googleSheets)
+    await updateCurrentMonthTrades(auth, googleSheets)
 }
